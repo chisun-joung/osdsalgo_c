@@ -7,13 +7,10 @@ typedef struct _node
    struct _node *next;
 } NODE;
 
-NODE head;
+NODE head={0,&head};
 
-void insert_data( int data, NODE *head )
+void insert_data( NODE *temp, NODE *head )
 {
-   NODE *temp;
-   temp = malloc( sizeof(NODE) );
-   temp->data = data;
    temp->next = head->next;
    head->next = temp;
 }
@@ -24,19 +21,21 @@ void display( NODE *head )
 	NODE *temp;
 	system("cls");
 	printf("[head]");
-	for( temp = head->next; temp; temp = temp->next )
-		printf("->[%d]", temp->data );
-	printf("\n");
+	for( temp = head->next; temp != head ; temp = temp->next )
+		printf("->[%d]", temp->data );  // (*0).data
+	printf("->[head]\n");
 	getchar();
 }
 
 int main()
 {
 	int i;
+	NODE temps[7];
 	display(&head);
 	for(i=0; i<7; i++ )
 	{
-		insert_data(i+1, &head);
+		temps[i].data = i+1;
+		insert_data(temps+i, &head);
 		display(&head);
 	}
 	return 0;
