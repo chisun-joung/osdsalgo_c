@@ -1,15 +1,16 @@
 #include <stdio.h>
 
-#define BIT_SET( index, x ) ((x)->data[index>>5] |= 1<<(index&31))
-#define BIT_ISSET( index, x ) ( (x)->data[index>>5] &(1<<(index&31)) )
-#define BIT_CLR( index, x ) ((x)->data[index>>5] &= ~(1<<(index&31)))
-#define BIT_ZERO( x )       do{ int i;                  \
-                                for(i=0; i<32; i++ )    \
-							      (x)->data[i] = 0; }while(0)
-typedef struct 
-{
-	int data[32];
-} bit_set;
+#define FD_SET(fd, fdsetp) \
+		(((fd_set *)(fdsetp))->fds_bits[(fd) >> 5] |= (1<<((fd) & 31)))
+
+#define FD_CLR(fd, fdsetp) \
+		(((fd_set *)(fdsetp))->fds_bits[(fd) >> 5] &= ~(1<<((fd) & 31)))
+
+#define FD_ISSET(fd, fdsetp) \
+		((((fd_set *)(fdsetp))->fds_bits[(fd) >> 5] & (1<<((fd) & 31))) != 0)
+
+#define FD_ZERO(fdsetp) \
+		(memset (fdsetp, 0, sizeof (*(fd_set *)(fdsetp))))
 //---------------------------------------------------------------
 int main()
 {
