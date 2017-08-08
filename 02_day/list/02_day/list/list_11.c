@@ -25,8 +25,15 @@ void insert_back( NODE *temp, NODE *head )
    __insert_data( temp, head->prev, head );
 }
 
-#define list_entry( ptr, type, member )                     \
-	((type*)((char*)ptr - (unsigned long)&((type*)0)->member ))
+#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+
+#define container_of(ptr, type, member) ({			\
+	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
+	(type *)( (char *)__mptr - offsetof(type,member) );})
+
+#define list_entry(ptr, type, member) \
+	container_of(ptr, type, member)
+
 //---------------------------------------------------
 
 typedef struct
