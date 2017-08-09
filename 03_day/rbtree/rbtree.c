@@ -22,7 +22,7 @@
 
 #include "rbtree.h"
 
-#define  EXPORT_SYMBOL(x)
+#define  EXPORT_SYMBOL(x);
 
 static void __rb_rotate_left(struct rb_node *node, struct rb_root *root)
 {

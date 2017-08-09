@@ -80,16 +80,32 @@ void display( struct rb_root *root )
 
 int main()
 {
-	int i;
+	int i, sid;
 	SAWON s[8];
 	struct rb_root root = {0};
-	display(&root);
 	for( i=0; i<8; i++ )
 	{
 		s[i].sid = i+1;
 		rb_insert_sid(&root, i+1, &s[i].tree);
+	}
+	display(&root);
+	while(1)
+	{
+		printf("삭제할 노드 입력: ");
+		scanf("%d", &sid );
+		rb_erase( &s[sid-1].tree, &root );
 		display(&root);
 	}
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
 
