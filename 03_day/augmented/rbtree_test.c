@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "rbtree.h"
+#include "rbtree_augmented.h"
 
 typedef struct
 {
@@ -16,6 +16,18 @@ typedef struct
 	int  augmented;
 	int color;
 } INFO;
+
+int my_compute( SAWON *s )
+{
+	int augmented=1;
+	if( s->tree.rb_left )
+		augmented += rb_entry(s->tree.rb_left,SAWON,tree)->augmented;
+	if( s->tree.rb_right )
+		augmented += rb_entry(s->tree.rb_right,SAWON,tree)->augmented;
+	return augmented;
+}
+
+RB_DECLARE_CALLBACKS( , rb, SAWON, tree, int, augmented, my_compute )
 
 SAWON * rb_insert_name(struct rb_root * root, char *name, struct rb_node * node)
 {
@@ -41,9 +53,45 @@ SAWON * rb_insert_name(struct rb_root * root, char *name, struct rb_node * node)
 	}
 
 	rb_link_node(node, parent, p);  // *p = node;
-	rb_insert_color(node, root);
+	rb_insert_augmented(node, root, &rb);
 
 	return NULL;
+}
+
+SAWON *my_select( struct rb_node *node, int i )
+{
+   int k = 1;
+   if( node == 0 )
+      return 0;
+   if( node->rb_left ) 
+      k = rb_entry( node->rb_left, SAWON, tree)->augmented+1;
+   if( i<k )
+     my_select( node->rb_left, i );
+   else if( i>k)
+     my_select( node->rb_right, i-k );
+   else 
+     return rb_entry( node, SAWON, tree);
+}
+
+int my_rank(struct rb_node *node)
+{
+	int k = 1;
+
+	if (node->rb_left)
+		k = rb_entry(node->rb_left, SAWON, tree)->augmented + 1;
+
+	while (rb_parent(node) != 0)
+	{
+		if (rb_parent(node)->rb_right == node)
+		{
+			if (rb_parent(node)->rb_left)
+				k += rb_entry(rb_parent(node)->rb_left, SAWON, tree)->augmented + 1;
+			else
+				k += 1;
+		}
+		node = rb_parent(node);
+	}
+	return k;
 }
 
 void __display(struct rb_node *temp, INFO (*a)[10], int *row, int *col )
@@ -86,17 +134,35 @@ void display( struct rb_root *root )
 	getchar();
 }
 
+
 int main()
 {
 	int i, sid;
+	int index;
+	SAWON *temp;
+
 	SAWON s[8] = {{"홍길동",},{"임꺽정",},{"일지매",},{"이순신",},
 	              {"강감찬",},{"사임당",},{"유관순",},{"안중근",}};
 	struct rb_root root = {0};
-	display(&root);
 	for( i=0; i<8; i++ )
 	{
 		rb_insert_name(&root, s[i].name, &s[i].tree);
-		display(&root);
+	}
+	display(&root);
+	while(1)
+	{
+		printf("몇번째?");
+		scanf("%d", &index );
+		temp = my_select(root.rb_node, index);
+		if( temp )
+			printf("%d번째 사원의 이름은 %s입니다.\n", index, temp->name );
+		else
+			printf("%d번째 사원은 범위에 있지 않습니다.\n", index );
+
+		index = -999;
+
+		index = my_rank( &temp->tree );
+		printf("%s 사원은 %d번째 입니다.\n", temp->name, index );
 	}
 	return 0;
 }
