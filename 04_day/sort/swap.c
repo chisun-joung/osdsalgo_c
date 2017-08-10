@@ -1,5 +1,120 @@
 #if 1
 #include <stdio.h>
+void swap( void *a, void *b , int size)
+{
+	char t;
+	int i;
+	char *p = (char*)a;
+	char *q = (char*)b;
+	for(i=0; i<size; i++ )
+	{
+		t = p[i];
+		p[i] = q[i];
+		q[i] = t;
+	}
+}
+void generic_swap(void *a, void *b, int size)
+{
+	char t;
+
+	do {
+		t = *(char *)a;
+		*(char *)a++ = *(char *)b;
+		*(char *)b++ = t;
+	} while (--size > 0);
+}
+
+//----------------------------------------------
+
+int main()
+{
+	int a=3, b=4;
+	double ad=3., bd=4.;
+	generic_swap(&a, &b, sizeof a);
+	printf("a=%d, b=%d\n", a, b );
+	generic_swap(&ad, &bd, sizeof ad);
+	printf("ad=%lf, bd=%lf\n", ad, bd );
+	return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+void swap( char *a, char *b , int size)
+{
+	char t;
+	int i;
+	for(i=0; i<size; i++ )
+	{
+		t = a[i];
+		a[i] = b[i];
+		b[i] = t;
+	}
+}
+//----------------------------------------------
+
+int main()
+{
+	int a=3, b=4;
+	double ad=3., bd=4.;
+	swap((char*)&a, (char*)&b, sizeof a);
+	printf("a=%d, b=%d\n", a, b );
+	swap((char*)&ad, (char*)&bd, sizeof ad);
+	printf("ad=%lf, bd=%lf\n", ad, bd );
+	return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+void swap_ii( int *a, int *b )       // swap_ii
+{
+	int t;
+	t = *a;
+	*a = *b;
+	*b = t;
+}
+void swap_dd( double *a, double *b )  // swap_dd
+{
+	double t;
+	t = *a;
+	*a = *b;
+	*b = t;
+}
+
+int main()
+{
+	int a=3, b=4;
+	double ad=3., bd=4.;
+	swap_ii(&a, &b);
+	printf("a=%d, b=%d\n", a, b );
+	swap_dd(&ad, &bd);
+	printf("ad=%lf, bd=%lf\n", ad, bd );
+	return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
+#define TYPE  float
+void swap( TYPE *a, TYPE *b )
+{
+	TYPE t;
+	t = *a;
+	*a = *b;
+	*b = t;
+}
+int main()
+{
+	int a=3, b=4;
+	swap(&a, &b);
+	printf("a=%d, b=%d\n", a, b );
+	return 0;
+}
+#endif
+
+#if 0
+#include <stdio.h>
 void swap( int *a, int *b )
 {
 	int t;
