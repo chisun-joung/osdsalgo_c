@@ -4,39 +4,43 @@
 #define OUTPUT(index)   printf("%d\n", index)
 #define XSIZE   256
 
-void preMp(char *x, int m, int mpNext[]) {
+void preKmp(char *x, int m, int kmpNext[]) {
    int i, j;
 
    i = 0;
-   j = mpNext[0] = -1;
+   j = kmpNext[0] = -1;
    while (i < m) {
       while (j > -1 && x[i] != x[j])
-         j = mpNext[j];
-      mpNext[++i] = ++j;
+         j = kmpNext[j];
+      i++;
+      j++;
+      if (x[i] == x[j])
+         kmpNext[i] = kmpNext[j];
+      else
+         kmpNext[i] = j;
    }
 }
 
 
-void MP(char *x, int m, char *y, int n) {
-   int i, j, mpNext[XSIZE];
+void KMP(char *x, int m, char *y, int n) {
+   int i, j, kmpNext[XSIZE];
 
    /* Preprocessing */
-   preMp(x, m, mpNext);
-
+   preKmp(x, m, kmpNext);
    for(i=0; i<m+1; i++ )
-	   printf("%4d", mpNext[i] );
+	   printf("%4d", kmpNext[i] );
    printf("\n");
 
    /* Searching */
    i = j = 0;
    while (j < n) {
       while (i > -1 && x[i] != y[j])
-         i = mpNext[i];
+         i = kmpNext[i];
       i++;
       j++;
       if (i >= m) {
          OUTPUT(j - i);
-         i = mpNext[i];
+         i = kmpNext[i];
       }
    }
 }
@@ -47,7 +51,7 @@ int main()
 {
 	char y[] = "This algorithm can be algorithm";
 	char x[] = "gagggagg";
-	MP( x, strlen(x), y, strlen(y) );
+	KMP( x, strlen(x), y, strlen(y) );
 	return 0;
 }
 
