@@ -101,7 +101,7 @@ struct flex_array *flex_array_alloc(int element_size, unsigned int total,
 	/* max_size will end up 0 if element_size > PAGE_SIZE */
 	if (total > max_size)
 		return NULL;
-	ret = malloc(sizeof(struct flex_array));
+	ret = calloc(1, sizeof(struct flex_array));
 	if (!ret)
 		return NULL;
 	ret->element_size = element_size;
